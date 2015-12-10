@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Elizabeth Orrico/Desktop/TEAMCORE Resources/DarmsCode/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="jars/commons-math3-3.3.jar"/>
+	<classpathentry kind="lib" path="jars/cplex.jar"/>
+	<classpathentry kind="lib" path="jars/jgraph-5.13.0.0.jar"/>
+	<classpathentry kind="lib" path="jars/jgrapht-core-0.9.1.jar"/>
+	<classpathentry kind="lib" path="jars/jgrapht-jdk1.6.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

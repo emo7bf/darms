@@ -1,0 +1,7 @@
+FLIGHT_BY_FLIGHT = TRUE
+RISK_CATEGORIES = input/RiskCategories.csv
+FLIGHTS = input/Flights0.csv
+SCREENING_RESOURCES = input/ScreeningResources.csv
+ATTACK_METHODS = attOnBody, attInCarryOn
+SCREENING_OPERATIONS = input/ScreeningOperations.csv
+POST_SCREENING_RESOURCES = input/PostScreeningResources.Null.csv

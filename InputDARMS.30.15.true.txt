@@ -1,0 +1,10 @@
+RISK_CATEGORIES = ./input/RiskCategories.6.csv
+FLIGHTS = ./input/Flights1424394339510.csv
+SCREENING_RESOURCES = ./input/ScreeningResources.csv
+SCREENING_OPERATIONS = ./input/ScreeningOperations.csv
+POST_SCREENING_RESOURCES = ./input/PostScreeningResources.Null.csv
+FLIGHT_BY_FLIGHT = true
+ATTACK_METHODS = attOnBody, attInCarryOn
+SHIFT_START_TIME = 04:00
+SHIFT_DURATION = 60
+TIME_GRANULARITY = 60

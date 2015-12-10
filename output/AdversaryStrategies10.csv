@@ -1,0 +1,7 @@
+RiskCategory, TimeWindow, Flight, AttackMethod
+SELECTEE, 240, Flight4, attOnBody
+UNKNOWN, 240, Flight29, attOnBody
+LOWRISK1, 240, Flight16, attOnBody
+LOWRISK2, 240, Flight14, attOnBody
+LOWRISK3, 240, Flight5, attOnBody
+LOWRISK4, 240, Flight4, attOnBody

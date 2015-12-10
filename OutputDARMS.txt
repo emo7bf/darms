@@ -1,0 +1,7 @@
+SCREENING_STRATEGY_FILE = ./output/ScreeningStrategy.csv
+ADVERSARY_STRATEGIES_FILE = ./output/AdversaryStrategies.csv
+ADVERSARY_PAYOFFS_FILE = ./output/AdversaryPayoffs.csv
+DEFENDER_PAYOFFS_FILE = ./output/DefenderPayoffs.csv
+FLIGHT_RISK_CATEGORY_COVERAGE_FILE = ./output/FlightRiskCategoryCoverage.csv
+PASSENGER_DISTRIBUTION_FILE = ./output/PassengerDistribution.csv
+RESOURCE_FINES_FILE = ./output/ResourceFines.csv
