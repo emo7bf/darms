@@ -1,13 +1,13 @@
 % TO DO: Try example with mult timewindows
 close all;
 clear all;
-
+numWindows = 3;
 overflowByResource = [];
 overflowFines = [];
 overflowPayoff = [];
 
 for i=0:50
-    [ data, passData, resData, opData, payoffData] = readInSecData(i);
+    [ data, passData, resData, opData, payoffData ] = readInSecData(i);
     
     % Divide by six because there are six categories.
     numFlights = size(data,1)/6;
@@ -17,7 +17,14 @@ for i=0:50
     
     % Data is reshaped to be risk categories, flights, operations (teams)
     data = reshape(data, [6, numFlights, numTeams]);
+    
+    data1 = [];
 
+    data1 = data(:,1:90,:);
+    data2 = data(:,91:120,:);
+    data3 = data(:,121:end,:);
+    
+    data = cat( 2, data1, data2, data3 );
     
     for k = 1:numFlights
         for j = 1:6
@@ -77,15 +84,16 @@ for i=0:50
     end
 
     for lnum = 1: numel(resData) / 3
-        subplot(2,3,lnum)
-        plot(resOverByFlight(1:30), 'r')
+        % subplot(2,3,lnum)
+        plot(1:90, resOverByFlight(lnum, 1:90), 'r')
         hold on;
-        plot(resOverByFlight(30:60), 'g')
+        plot(90:150, resOverByFlight(lnum, 90:150) , 'g')
         hold on;
-        plot(resOverByFlight(60:90), 'b')
+        plot(150:169, resOverByFlight(lnum, 150:end) , 'b')
         title( labels{lnum} )
         xlabel( 'Flight #' )
-        ylabel( 'Percentage of capacity used' )
+        ylabel( 'Number of Screenees' )
+        hold off;
     end
     
     
@@ -121,15 +129,31 @@ for i=0:50
 end
 
 for lnum = 1: numel(resData) / 3
-   subplot(2,3,lnum)
-   plot(overflowFines(lnum,:), overflowByResource(lnum,:))
-   title( labels{lnum} )
-   xlabel( 'Fine' )
-   ylabel( 'Percentage of capacity used' )
+   % subplot(2,3,lnum)
+   figure;
+   plot(overflowFines(lnum,:), overflowByResource(lnum,:)*caps(lnum) )
+   h = refline([0, caps(lnum)])
+   h.Color = 'r'
+   title( strcat( labels{lnum},' Amount of Overflow'),'FontSize',15  )
+   xlabel( '\it{f_{ETD}}','FontSize',20 )
+   ylabel( 'Number of Screenees', 'FontSize',20 )
 end
 
 % add risk categories here
 
 figure;
 plot(overflowFines(lnum,:), overflowPayoff');
+
+figure;
+passDist = sum(passData, 1);
+normPassDist = passDist / norm( passDist );
+normPassRep = repmat( normPassDist, size(overflowFines,2), 1 );
+
+totalPayoff = overflowPayoff' .* normPassRep;
+
+plot(overflowFines(lnum,:), sum( overflowPayoff', 2) );
+h1 = xlabel( '\it{f_{r \in R}}', 'Interpreter','LaTex','FontSize',20);
+h2 = ylabel( 'Utility', 'Interpreter','LaTex','FontSize',20 );
+set([h1 h2], 'interpreter', 'tex');
+title( 'Total Defender Utility','FontSize',20)
 close all;
