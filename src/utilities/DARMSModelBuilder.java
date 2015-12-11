@@ -206,6 +206,8 @@ public class DARMSModelBuilder {
 		
 		Map<Integer, RiskCategory> columnMap = new HashMap<Integer, RiskCategory>();
 		
+		int here = arg.length;
+		
 		for(int i = 7; i < arg.length; i++){
 			String c = arg[i].trim().toLowerCase();
 			

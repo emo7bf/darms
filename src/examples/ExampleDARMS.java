@@ -22,7 +22,7 @@ public class ExampleDARMS{
 				String inputFile = "InputDARMS.30.6.true.txt"; // args[1];
 				String outputFile = "OutputDARMS.txt";
 				boolean zeroSum = true;
-				boolean decomposed = true;
+				boolean decomposed = false;
 				boolean verbose = true;
 				
 				long start = System.currentTimeMillis();

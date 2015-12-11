@@ -177,8 +177,10 @@ public class DARMSMarginalSolver{
 			}
 		}
 		// ADDITION: Initialize overflow variables
-		// For all the time windows...
-		for(int t : currentTimeWindows){
+		// For all the time windows but the last...
+		
+		for(int i = 0; i < currentTimeWindows.size() - 1; i++ ){
+			int t = currentTimeWindows.get(i);
 			
 			// ...Create a map of resources to overflow value...
 			HashMap<ScreeningResource, IloNumVar> hm = new HashMap<ScreeningResource, IloNumVar>();
@@ -310,8 +312,9 @@ public class DARMSMarginalSolver{
 			expr = cplex.sum(expr, cplex.prod(dMap.get(c), adversaryDistribution.get(c)));
 		}
 		
-		// ADDITION: subtract fine times overflow from obj func
-		for(int t : currentTimeWindows){
+		// ADDITION: subtract fine times overflow from obj func for all the time windows but the last
+		for(int i = 0; i < currentTimeWindows.size() - 1; i++ ){
+			int t = currentTimeWindows.get(i);
 			for(ScreeningResource r : model.getScreeningResources().keySet()){
 				expr = cplex.sum(expr, cplex.negative(cplex.prod(ovMap.get(t).get(r), model.getResourceFines().get(t).get(r))));
 			}
@@ -348,9 +351,11 @@ public class DARMSMarginalSolver{
 				riskCategoryCoverage.put(t, calculateRiskCategoryCoverage().get(t));
 				
 				for( ScreeningResource r: model.getScreeningResources().keySet() ){
-					System.out.println();
-					System.out.println(r+" overflow amount: ");
-					System.out.println(cplex.getValue(ovMap.get(t).get(r)));
+					if( t != allTimeWindows.get(allTimeWindows.size() - 1)){
+						System.out.println();
+						System.out.println(r+" overflow amount: ");
+						System.out.println(cplex.getValue(ovMap.get(t).get(r)));
+					}
 				}
 				
 				Map<RiskCategory, Double> dPayoffs = getDefenderPayoffs();
@@ -556,8 +561,10 @@ public class DARMSMarginalSolver{
 	private void sumDefenderScreeningThroughputRow() throws IloException{
 		Map<ScreeningResource, Integer> screeningResources = model.getScreeningResources();
 		// ADDED flag to not add previous overflow first time through
-		boolean flag = true;
+		boolean firstRound = true;
+		boolean lastRound = false;
 		int prevt = 0;
+		int counter = 0;
 		for(int t : currentTimeWindows){
 			for(ScreeningResource r : screeningResources.keySet()){
 				IloNumExpr expr = cplex.constant(0);
@@ -573,11 +580,17 @@ public class DARMSMarginalSolver{
 				}
 				
 				// ADDED overflow constraints for all time windows, resources
-				if( flag ){
-					prevt = t;
+				if( firstRound ){
+					// If it is the first time window, then don't include overflow from previous round
 					expr = cplex.sum(expr, cplex.negative(ovMap.get(t).get(r)));
 				
+				} else if( lastRound ) {
+					// If it is the last time window, then don't include overflow from this round
+					expr = cplex.sum(expr, ovMap.get(prevt).get(r));
+					
 				} else {
+					// Otherwise, include negative overflow from this round and
+					// positive overflow from previous round.
 					expr = cplex.sum(expr, ovMap.get(prevt).get(r));
 					expr = cplex.sum(expr, cplex.negative(ovMap.get(t).get(r)));
 				}
@@ -590,9 +603,18 @@ public class DARMSMarginalSolver{
 				
 				constraints.add(cplex.le(expr, capacity, "ST" + t + "R" + r.id() + "OVERFLOW"));
 			}
-			if( flag ){
-				flag = false;
+			
+			counter = counter + 1;
+			
+			if( firstRound ){
+				firstRound = false;
 			}
+			if( counter == (currentTimeWindows.size() - 1)){
+				lastRound = true;
+			}
+			
+			prevt = t;
+			
 		}
 	}
 	

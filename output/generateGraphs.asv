@@ -2,18 +2,23 @@
 close all;
 clear all;
 
-[ data, passData, resData, opData] = readInSecData(1);
-
-resData
 overflowByResource = [];
+overflowFines = [];
+overflowPayoff = [];
 
 for i=0:50
-    [ data, passData, resData, opData] = readInSecData(i);
+    [ data, passData, resData, opData, payoffData] = readInSecData(i);
+    
     % Divide by six because there are six categories.
     numFlights = size(data,1)/6;
+    
+    % Tells us how many operations there are
     numTeams = size(data,2);
+    
+    % Data is reshaped to be risk categories, flights, operations (teams)
     data = reshape(data, [6, numFlights, numTeams]);
 
+    
     for k = 1:numFlights
         for j = 1:6
             data(j, k,:) = data(j, k,:).*passData(k,j);
@@ -68,6 +73,14 @@ for i=0:50
 %     hold off;
 %     figure;
     percentages = resOver ./caps
+    
+    opsbyflight =squeeze(sum(data,1));
+
+%     for opnum = 1:size(opsbyflight, 2)
+%         figure;
+%         plot( opsbyflight(:,opnum));
+%     end
+    
 %     bar(percentages);
 %     set(gca, 'XTickLabel', labels);
 %     title('Total Percentage of Resources Used');
@@ -78,13 +91,20 @@ for i=0:50
     % set(gca, 'XTickLabel', ops);
     % title( 'Number of people to each team' );
     overflowByResource = [overflowByResource percentages];
+    overflowFines = [overflowFines cell2mat( resData(:,3)) ];
+    overflowPayoff = [overflowPayoff payoffData];
 end
 
 for lnum = 1: numel(resData) / 3
    subplot(2,3,lnum)
-   plot(overflowByResource(lnum,:))
+   plot(overflowFines(lnum,:), overflowByResource(lnum,:))
    title( labels{lnum} )
    xlabel( 'Fine' )
    ylabel( 'Percentage of capacity used' )
 end
+
+% add risk categories here
+
+figure;
+plot(overflowFines(lnum,:), overflowPayoff');
 close all;
